@@ -1,0 +1,19 @@
+/* Dashboard Layout - بدون Sidebar */
+.dashboard-layout {
+    .topbar {
+        margin-left: 0 !important;
+        margin-right: 10px;
+    }
+
+    .page-content {
+        margin-left: 0 !important;
+        border-right: none !important;
+    }
+
+    .wrapper {
+        .page-content {
+            margin-left: 0 !important;
+            border-right: none !important;
+        }
+    }
+}
