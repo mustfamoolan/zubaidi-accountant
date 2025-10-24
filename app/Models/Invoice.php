@@ -15,7 +15,7 @@ class Invoice extends Model
         'amount_usd',
         'exchange_rate',
         'amount_iqd',
-        'tax_iqd',
+        'tax_percentage',
         'total_iqd',
         'status',
         'purchase_date',
@@ -26,7 +26,7 @@ class Invoice extends Model
         'amount_usd' => 'decimal:2',
         'exchange_rate' => 'decimal:4',
         'amount_iqd' => 'decimal:2',
-        'tax_iqd' => 'decimal:2',
+        'tax_percentage' => 'decimal:2',
         'total_iqd' => 'decimal:2',
         'purchase_date' => 'date',
     ];

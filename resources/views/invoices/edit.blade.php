@@ -63,9 +63,9 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">ضريبة الفاتورة بالدينار العراقي <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.01" class="form-control" name="tax_iqd" id="taxIqd" value="{{ old('tax_iqd', $invoice->tax_iqd) }}" required>
-                                    @error('tax_iqd')
+                                    <label class="form-label">نسبة الضريبة (%) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" class="form-control" name="tax_percentage" id="taxPercentage" value="{{ old('tax_percentage', $invoice->tax_percentage) }}" required min="0" max="100">
+                                    @error('tax_percentage')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -105,16 +105,17 @@
 
             document.getElementById('amountUsd').addEventListener('input', calculateAmounts);
             document.getElementById('exchangeRate').addEventListener('input', calculateAmounts);
-            document.getElementById('taxIqd').addEventListener('input', calculateAmounts);
+            document.getElementById('taxPercentage').addEventListener('input', calculateAmounts);
         });
 
         function calculateAmounts() {
             const amountUsd = parseFloat(document.getElementById('amountUsd').value) || 0;
             const exchangeRate = parseFloat(document.getElementById('exchangeRate').value) || 0;
-            const taxIqd = parseFloat(document.getElementById('taxIqd').value) || 0;
+            const taxPercentage = parseFloat(document.getElementById('taxPercentage').value) || 0;
 
             const amountIqd = amountUsd * exchangeRate;
-            const totalIqd = amountIqd + taxIqd;
+            const taxAmount = amountIqd * (taxPercentage / 100);
+            const totalIqd = amountIqd + taxAmount;
 
             document.getElementById('amountIqd').value = Math.round(amountIqd);
             document.getElementById('totalIqd').value = Math.round(totalIqd);

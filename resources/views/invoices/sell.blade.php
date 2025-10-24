@@ -2,7 +2,7 @@
 
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="invoice-tax" content="{{ $invoice->tax_iqd }}">
+    <meta name="invoice-tax-percentage" content="{{ $invoice->tax_percentage }}">
     <meta name="invoice-total" content="{{ $invoice->total_iqd }}">
     <script>
         window.customersData = @json($customers);
@@ -26,7 +26,7 @@
                                 <strong>المبلغ بالدينار:</strong> {{ number_format($invoice->amount_iqd, 0) }} د.ع
                             </div>
                             <div class="col-md-3">
-                                <strong>الضريبة:</strong> {{ number_format($invoice->tax_iqd, 0) }} د.ع
+                                <strong>نسبة الضريبة:</strong> {{ number_format($invoice->tax_percentage, 0) }}%
                             </div>
                             <div class="col-md-3">
                                 <strong>المجموع:</strong> {{ number_format($invoice->total_iqd, 0) }} د.ع

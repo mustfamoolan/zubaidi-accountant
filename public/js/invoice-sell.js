@@ -93,10 +93,11 @@ function calculateTotals() {
         totalAmountIqd += parseFloat(input.value) || 0;
     });
 
-    const invoiceTax = parseFloat(document.querySelector('meta[name="invoice-tax"]')?.getAttribute('content') || '0');
+    const invoiceTaxPercentage = parseFloat(document.querySelector('meta[name="invoice-tax-percentage"]')?.getAttribute('content') || '0');
     const invoiceTotal = parseFloat(document.querySelector('meta[name="invoice-total"]')?.getAttribute('content') || '0');
 
-    const totalWithTax = totalAmountIqd + invoiceTax;
+    const taxAmount = totalAmountIqd * (invoiceTaxPercentage / 100);
+    const totalWithTax = totalAmountIqd + taxAmount;
     // الربح = إجمالي المبلغ المباع - المبلغ الأصلي للفاتورة
     const expectedProfit = totalWithTax - invoiceTotal;
 

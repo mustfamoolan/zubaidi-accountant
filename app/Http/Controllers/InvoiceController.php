@@ -32,7 +32,7 @@ class InvoiceController extends Controller
             'invoice_number' => 'required|string|unique:invoices,invoice_number',
             'amount_usd' => 'required|numeric|min:0.01',
             'exchange_rate' => 'required|numeric|min:0.0001',
-            'tax_iqd' => 'required|numeric|min:0',
+            'tax_percentage' => 'required|numeric|min:0|max:100',
             'purchase_date' => 'required|date',
             'password' => 'required|string',
         ]);
@@ -45,14 +45,15 @@ class InvoiceController extends Controller
         DB::beginTransaction();
         try {
             $amountIqd = $request->amount_usd * $request->exchange_rate;
-            $totalIqd = $amountIqd + $request->tax_iqd;
+            $taxAmount = $amountIqd * ($request->tax_percentage / 100);
+            $totalIqd = $amountIqd + $taxAmount;
 
             $invoice = Invoice::create([
                 'invoice_number' => $request->invoice_number,
                 'amount_usd' => $request->amount_usd,
                 'exchange_rate' => $request->exchange_rate,
                 'amount_iqd' => $amountIqd,
-                'tax_iqd' => $request->tax_iqd,
+                'tax_percentage' => $request->tax_percentage,
                 'total_iqd' => $totalIqd,
                 'status' => 'available',
                 'purchase_date' => $request->purchase_date,
@@ -113,7 +114,7 @@ class InvoiceController extends Controller
                 $totalAmountIqd += $amountIqd;
             }
 
-            $totalWithTaxIqd = $totalAmountIqd + $invoice->tax_iqd;
+            $totalWithTaxIqd = $totalAmountIqd + ($totalAmountIqd * ($invoice->tax_percentage / 100));
             // الربح = إجمالي المبلغ المباع - المبلغ الأصلي للفاتورة
             $profitIqd = $totalWithTaxIqd - $invoice->total_iqd;
 
@@ -191,7 +192,7 @@ class InvoiceController extends Controller
             'invoice_number' => 'required|string|max:255|unique:invoices,invoice_number,' . $id,
             'amount_usd' => 'required|numeric|min:0.01',
             'exchange_rate' => 'required|numeric|min:0.0001',
-            'tax_iqd' => 'required|numeric|min:0',
+            'tax_percentage' => 'required|numeric|min:0|max:100',
             'purchase_date' => 'required|date',
             'password' => 'required|string',
         ]);
@@ -203,14 +204,15 @@ class InvoiceController extends Controller
 
         // حساب المبلغ بالدينار العراقي
         $amountIqd = $request->amount_usd * $request->exchange_rate;
-        $totalIqd = $amountIqd + $request->tax_iqd;
+        $taxAmount = $amountIqd * ($request->tax_percentage / 100);
+        $totalIqd = $amountIqd + $taxAmount;
 
         $invoice->update([
             'invoice_number' => $request->invoice_number,
             'amount_usd' => $request->amount_usd,
             'exchange_rate' => $request->exchange_rate,
             'amount_iqd' => $amountIqd,
-            'tax_iqd' => $request->tax_iqd,
+            'tax_percentage' => $request->tax_percentage,
             'total_iqd' => $totalIqd,
             'purchase_date' => $request->purchase_date,
         ]);

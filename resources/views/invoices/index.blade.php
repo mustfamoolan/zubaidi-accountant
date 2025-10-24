@@ -42,7 +42,7 @@
                                             <td>{{ number_format($invoice->amount_usd, 0) }} $</td>
                                             <td>{{ number_format($invoice->exchange_rate, 4) }}</td>
                                             <td>{{ number_format($invoice->amount_iqd, 0) }} د.ع</td>
-                                            <td>{{ number_format($invoice->tax_iqd, 0) }} د.ع</td>
+                                            <td>{{ number_format($invoice->tax_percentage, 0) }}%</td>
                                             <td>{{ number_format($invoice->total_iqd, 0) }} د.ع</td>
                                             <td>
                                                 @if($invoice->status === 'available')

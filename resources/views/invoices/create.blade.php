@@ -65,10 +65,10 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">الضريبة بالدينار العراقي <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.01" class="form-control @error('tax_iqd') is-invalid @enderror"
-                                           name="tax_iqd" value="{{ old('tax_iqd', 0) }}" required>
-                                    @error('tax_iqd')
+                                    <label class="form-label">نسبة الضريبة (%) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" class="form-control @error('tax_percentage') is-invalid @enderror"
+                                           name="tax_percentage" value="{{ old('tax_percentage', 0) }}" required min="0" max="100">
+                                    @error('tax_percentage')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
