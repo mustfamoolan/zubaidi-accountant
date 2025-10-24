@@ -119,13 +119,19 @@ function addNewCustomer() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
         },
         body: JSON.stringify({
             name: name
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             // إضافة العميل الجديد إلى قائمة العملاء
@@ -149,6 +155,6 @@ function addNewCustomer() {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('حدث خطأ في إضافة العميل');
+        alert('حدث خطأ في إضافة العميل: ' + error.message);
     });
 }

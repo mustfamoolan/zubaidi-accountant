@@ -56,16 +56,16 @@ class CustomerController extends Controller
 
     public function store(Request $request)
     {
-        // التحقق إذا كان الطلب AJAX (يتوقع JSON response)
-        if ($request->wantsJson() || $request->ajax()) {
-            $request->validate([
-                'name' => 'required|string|max:255|unique:customers,name',
-            ]);
+        $request->validate([
+            'name' => 'required|string|max:255|unique:customers,name',
+        ]);
 
-            $customer = Customer::create([
-                'name' => $request->name,
-            ]);
+        $customer = Customer::create([
+            'name' => $request->name,
+        ]);
 
+        // التحقق إذا كان الطلب يتوقع JSON response
+        if ($request->wantsJson() || $request->ajax() || $request->header('Content-Type') === 'application/json') {
             return response()->json([
                 'success' => true,
                 'customer' => [
@@ -76,14 +76,6 @@ class CustomerController extends Controller
         }
 
         // إذا كان طلب عادي (form submission)
-        $request->validate([
-            'name' => 'required|string|max:255|unique:customers,name',
-        ]);
-
-        $customer = Customer::create([
-            'name' => $request->name,
-        ]);
-
         return redirect()->route('customers.index')->with('success', 'تم إضافة العميل بنجاح');
     }
 
