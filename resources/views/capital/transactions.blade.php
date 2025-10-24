@@ -31,11 +31,21 @@
                                             <td>
                                                 @if($transaction->type === 'deposit')
                                                     <span class="badge bg-success">إيداع</span>
-                                                @else
+                                                @elseif($transaction->type === 'withdrawal')
                                                     <span class="badge bg-danger">سحب</span>
+                                                @elseif($transaction->type === 'shared_expense')
+                                                    <span class="badge bg-warning">مصروف مشترك</span>
                                                 @endif
                                             </td>
-                                            <td>{{ number_format($transaction->amount, 0) }} د.ع</td>
+                                            <td>
+                                                @if($transaction->type === 'deposit')
+                                                    <span class="text-success fw-bold">+{{ number_format($transaction->amount, 0) }} د.ع</span>
+                                                @elseif($transaction->type === 'withdrawal')
+                                                    <span class="text-danger fw-bold">-{{ number_format($transaction->amount, 0) }} د.ع</span>
+                                                @elseif($transaction->type === 'shared_expense')
+                                                    <span class="text-warning fw-bold">-{{ number_format($transaction->amount, 0) }} د.ع</span>
+                                                @endif
+                                            </td>
                                             <td>{{ number_format($transaction->balance_after, 0) }} د.ع</td>
                                             <td>{{ $transaction->description ?? '-' }}</td>
                                             <td>{{ $transaction->createdBy->name }}</td>

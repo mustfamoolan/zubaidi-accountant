@@ -60,6 +60,22 @@
                     <div class="row align-items-center justify-content-between">
                         <div class="col-6">
                             <div class="avatar-md bg-light bg-opacity-50 rounded">
+                                <iconify-icon icon="solar:bill-list-broken" class="fs-32 text-warning avatar-title"></iconify-icon>
+                            </div>
+                            <p class="text-muted mb-2 mt-3">المصروفات المشتركة</p>
+                            <h3 class="text-dark fw-bold mb-0">{{ number_format($totalSharedExpenses, 0) }} د.ع</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center justify-content-between">
+                        <div class="col-6">
+                            <div class="avatar-md bg-light bg-opacity-50 rounded">
                                 <iconify-icon icon="solar:users-group-two-rounded-broken"
                                               class="fs-32 text-info avatar-title"></iconify-icon>
                             </div>
@@ -85,6 +101,9 @@
                         </button>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#withdrawModal">
                             <i class="ri-subtract-line me-1"></i> إضافة سحب
+                        </button>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#sharedExpenseModal">
+                            <i class="ri-bill-line me-1"></i> مصروف مشترك
                         </button>
                         <a href="{{ route('capital.transactions') }}" class="btn btn-info">
                             <i class="ri-file-list-line me-1"></i> سجل الحركات
@@ -238,6 +257,39 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
                         <button type="submit" class="btn btn-danger">إضافة السحب</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal المصروف المشترك -->
+    <div class="modal fade" id="sharedExpenseModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تسجيل مصروف مشترك</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('capital.shared-expense') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">المبلغ <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" class="form-control" name="amount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">الوصف</label>
+                            <textarea class="form-control" name="description" rows="3" placeholder="وصف المصروف المشترك"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">تاريخ المصروف</label>
+                            <input type="date" class="form-control" name="transaction_date" value="{{ now()->toDateString() }}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-warning">تسجيل المصروف</button>
                     </div>
                 </form>
             </div>

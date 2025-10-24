@@ -25,6 +25,7 @@ class CapitalController extends Controller
         // إحصائيات رأس المال
         $totalDeposits = CapitalTransaction::deposits()->sum('amount');
         $totalWithdrawals = CapitalTransaction::withdrawals()->sum('amount');
+        $totalSharedExpenses = CapitalTransaction::sharedExpenses()->sum('amount');
         $recentTransactions = CapitalTransaction::with('createdBy')->recent(10)->get();
 
         // إحصائيات المستثمرين
@@ -36,6 +37,7 @@ class CapitalController extends Controller
             'capitalAccount',
             'totalDeposits',
             'totalWithdrawals',
+            'totalSharedExpenses',
             'recentTransactions',
             'totalInvestors',
             'totalInvestments',
@@ -128,6 +130,46 @@ class CapitalController extends Controller
             }
 
             return redirect()->back()->with('success', $message);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطأ: ' . $e->getMessage());
+        }
+    }
+
+    public function sharedExpense(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:0.01',
+            'description' => 'nullable|string|max:500',
+            'transaction_date' => 'nullable|date|before_or_equal:today',
+        ]);
+
+        try {
+            $capitalAccount = CapitalAccount::first();
+            if (!$capitalAccount) {
+                return redirect()->back()->with('error', 'لا يوجد حساب رأس مال');
+            }
+
+            if ($capitalAccount->current_balance < $request->amount) {
+                return redirect()->back()->with('error', 'الرصيد الحالي غير كافٍ');
+            }
+
+            $description = $request->description ?? 'مصروف مشترك';
+            $transactionDate = $request->transaction_date ?? now()->toDateString();
+
+            $capitalAccount->current_balance -= $request->amount;
+            $capitalAccount->save();
+
+            CapitalTransaction::create([
+                'capital_account_id' => $capitalAccount->id,
+                'type' => 'shared_expense',
+                'amount' => $request->amount,
+                'balance_after' => $capitalAccount->current_balance,
+                'description' => $description,
+                'transaction_date' => $transactionDate,
+                'created_by' => auth()->id(),
+            ]);
+
+            return redirect()->route('capital.index')->with('success', 'تم تسجيل المصروف المشترك بنجاح');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ: ' . $e->getMessage());
         }

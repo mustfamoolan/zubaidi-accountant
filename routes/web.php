@@ -53,6 +53,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/capital/transactions', [CapitalController::class, 'transactions'])->name('capital.transactions');
     Route::post('/capital/deposit', [CapitalController::class, 'deposit'])->name('capital.deposit');
     Route::post('/capital/withdraw', [CapitalController::class, 'withdraw'])->name('capital.withdraw');
+    Route::post('/capital/shared-expense', [CapitalController::class, 'sharedExpense'])->name('capital.shared-expense');
 
     // المستثمرين
     Route::resource('investors', InvestorController::class);

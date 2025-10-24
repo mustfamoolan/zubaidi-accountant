@@ -45,6 +45,11 @@ class CapitalTransaction extends Model
         return $query->where('type', 'withdrawal');
     }
 
+    public function scopeSharedExpenses($query)
+    {
+        return $query->where('type', 'shared_expense');
+    }
+
     public function scopeRecent($query, $limit = 10)
     {
         return $query->orderBy('transaction_date', 'desc')->limit($limit);
