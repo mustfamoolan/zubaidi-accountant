@@ -72,10 +72,11 @@ class CapitalController extends Controller
                 ]);
             }
 
-            // إضافة اسم المستثمر للوصف إذا تم اختياره
             $description = $request->description;
+            $investor = null;
+
             if ($request->investor_id) {
-                $investor = \App\Models\Investor::find($request->investor_id);
+                $investor = Investor::find($request->investor_id);
                 $description = ($description ? $description . ' - ' : '') . 'من المستثمر: ' . $investor->name;
             }
 
@@ -85,8 +86,17 @@ class CapitalController extends Controller
                 $request->transaction_date
             );
 
+            // إضافة المعاملة لحساب المستثمر أيضاً
+            if ($investor) {
+                $investor->deposit(
+                    $request->amount,
+                    $request->description,
+                    $request->transaction_date
+                );
+            }
+
             $message = 'تم إضافة الإيداع بنجاح';
-            if ($request->investor_id) {
+            if ($investor) {
                 $message .= ' من المستثمر: ' . $investor->name;
             }
 
@@ -111,10 +121,11 @@ class CapitalController extends Controller
                 return redirect()->back()->with('error', 'لا يوجد حساب رأس مال');
             }
 
-            // إضافة اسم المستثمر للوصف إذا تم اختياره
             $description = $request->description;
+            $investor = null;
+
             if ($request->investor_id) {
-                $investor = \App\Models\Investor::find($request->investor_id);
+                $investor = Investor::find($request->investor_id);
                 $description = ($description ? $description . ' - ' : '') . 'للمستثمر: ' . $investor->name;
             }
 
@@ -124,8 +135,17 @@ class CapitalController extends Controller
                 $request->transaction_date
             );
 
+            // إضافة المعاملة لحساب المستثمر أيضاً
+            if ($investor) {
+                $investor->withdraw(
+                    $request->amount,
+                    $request->description,
+                    $request->transaction_date
+                );
+            }
+
             $message = 'تم السحب بنجاح';
-            if ($request->investor_id) {
+            if ($investor) {
                 $message .= ' للمستثمر: ' . $investor->name;
             }
 

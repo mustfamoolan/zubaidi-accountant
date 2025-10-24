@@ -115,6 +115,17 @@ class InvestorController extends Controller
                 $request->transaction_date
             );
 
+            // إضافة المعاملة لحساب رأس المال أيضاً
+            $capitalAccount = \App\Models\CapitalAccount::first();
+            if ($capitalAccount) {
+                $description = ($request->description ? $request->description . ' - ' : '') . 'من المستثمر: ' . $investor->name;
+                $capitalAccount->deposit(
+                    $request->amount,
+                    $description,
+                    $request->transaction_date
+                );
+            }
+
             return redirect()->back()->with('success', 'تم إضافة الإيداع بنجاح للمستثمر: ' . $investor->name);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ: ' . $e->getMessage());
@@ -138,6 +149,17 @@ class InvestorController extends Controller
                 $request->description,
                 $request->transaction_date
             );
+
+            // إضافة المعاملة لحساب رأس المال أيضاً
+            $capitalAccount = \App\Models\CapitalAccount::first();
+            if ($capitalAccount) {
+                $description = ($request->description ? $request->description . ' - ' : '') . 'للمستثمر: ' . $investor->name;
+                $capitalAccount->withdraw(
+                    $request->amount,
+                    $description,
+                    $request->transaction_date
+                );
+            }
 
             return redirect()->back()->with('success', 'تم السحب بنجاح من المستثمر: ' . $investor->name);
         } catch (\Exception $e) {
