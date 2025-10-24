@@ -75,18 +75,19 @@
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">المبلغ الكلي مع الضريبة</label>
-                            <input type="text" class="form-control" id="total_iqd" readonly>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">كلمة المرور للتأكيد <span class="text-danger">*</span></label>
-                            <input type="password" class="form-control @error('password') is-invalid @enderror"
-                                   name="password" required placeholder="أدخل كلمة المرور للتأكيد">
-                            @error('password')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">مبلغ الضريبة بالدينار العراقي</label>
+                                    <input type="text" class="form-control" id="tax_amount_iqd" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">المبلغ الكلي مع الضريبة</label>
+                                    <input type="text" class="form-control" id="total_iqd" readonly>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="d-flex gap-2">

@@ -34,13 +34,7 @@ class InvestorController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:investors,name',
             'notes' => 'nullable|string|max:1000',
-            'password' => 'required|string',
         ]);
-
-        // التحقق من كلمة المرور
-        if (!Hash::check($request->password, auth()->user()->password)) {
-            return redirect()->back()->with('error', 'كلمة المرور غير صحيحة');
-        }
 
         $investor = Investor::create([
             'name' => $request->name,
@@ -85,13 +79,7 @@ class InvestorController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:investors,name,' . $id,
             'notes' => 'nullable|string|max:1000',
-            'password' => 'required|string',
         ]);
-
-        // التحقق من كلمة المرور
-        if (!Hash::check($request->password, auth()->user()->password)) {
-            return redirect()->back()->with('error', 'كلمة المرور غير صحيحة');
-        }
 
         $investor->update([
             'name' => $request->name,
@@ -116,13 +104,7 @@ class InvestorController extends Controller
             'amount' => 'required|numeric|min:0.01',
             'description' => 'nullable|string|max:500',
             'transaction_date' => 'nullable|date|before_or_equal:today',
-            'password' => 'required|string',
         ]);
-
-        // التحقق من كلمة المرور
-        if (!Hash::check($request->password, auth()->user()->password)) {
-            return redirect()->back()->with('error', 'كلمة المرور غير صحيحة');
-        }
 
         $investor = Investor::findOrFail($request->investor_id);
 
@@ -146,13 +128,7 @@ class InvestorController extends Controller
             'amount' => 'required|numeric|min:0.01',
             'description' => 'nullable|string|max:500',
             'transaction_date' => 'nullable|date|before_or_equal:today',
-            'password' => 'required|string',
         ]);
-
-        // التحقق من كلمة المرور
-        if (!Hash::check($request->password, auth()->user()->password)) {
-            return redirect()->back()->with('error', 'كلمة المرور غير صحيحة');
-        }
 
         $investor = Investor::findOrFail($request->investor_id);
 
@@ -179,13 +155,7 @@ class InvestorController extends Controller
             'amount' => 'required|numeric|min:0.01',
             'description' => 'nullable|string|max:500',
             'transaction_date' => 'nullable|date|before_or_equal:today',
-            'password' => 'required|string',
         ]);
-
-        // التحقق من كلمة المرور
-        if (!Hash::check($request->password, auth()->user()->password)) {
-            return redirect()->back()->with('error', 'كلمة المرور غير صحيحة');
-        }
 
         $investor = Investor::findOrFail($request->investor_id);
 

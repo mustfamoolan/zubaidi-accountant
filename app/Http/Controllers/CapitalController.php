@@ -59,13 +59,7 @@ class CapitalController extends Controller
             'investor_id' => 'nullable|exists:investors,id',
             'description' => 'nullable|string|max:500',
             'transaction_date' => 'nullable|date|before_or_equal:today',
-            'password' => 'required|string',
         ]);
-
-        // التحقق من كلمة المرور
-        if (!Hash::check($request->password, auth()->user()->password)) {
-            return redirect()->back()->with('error', 'كلمة المرور غير صحيحة');
-        }
 
         try {
             $capitalAccount = CapitalAccount::first();
@@ -107,13 +101,7 @@ class CapitalController extends Controller
             'investor_id' => 'nullable|exists:investors,id',
             'description' => 'nullable|string|max:500',
             'transaction_date' => 'nullable|date|before_or_equal:today',
-            'password' => 'required|string',
         ]);
-
-        // التحقق من كلمة المرور
-        if (!Hash::check($request->password, auth()->user()->password)) {
-            return redirect()->back()->with('error', 'كلمة المرور غير صحيحة');
-        }
 
         try {
             $capitalAccount = CapitalAccount::first();

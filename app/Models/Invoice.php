@@ -47,6 +47,28 @@ class Invoice extends Model
         return $this->amount_usd - $totalSold;
     }
 
+    public function getSoldAmountUsd()
+    {
+        return $this->sales()->sum('total_amount_usd');
+    }
+
+    public function getAvailableAmountUsd()
+    {
+        return $this->amount_usd - $this->getSoldAmountUsd();
+    }
+
+    public function getAvailableAmountIqd()
+    {
+        $availableUsd = $this->getAvailableAmountUsd();
+        return $availableUsd * $this->exchange_rate;
+    }
+
+    public function getSoldPercentage()
+    {
+        if ($this->amount_usd == 0) return 0;
+        return ($this->getSoldAmountUsd() / $this->amount_usd) * 100;
+    }
+
     public function getTotalProfit()
     {
         return $this->sales()->sum('profit_iqd');

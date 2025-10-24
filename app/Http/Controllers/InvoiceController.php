@@ -34,13 +34,7 @@ class InvoiceController extends Controller
             'exchange_rate' => 'required|numeric|min:0.0001',
             'tax_percentage' => 'required|numeric|min:0|max:100',
             'purchase_date' => 'required|date',
-            'password' => 'required|string',
         ]);
-
-        // التحقق من كلمة المرور
-        if (!Hash::check($request->password, auth()->user()->password)) {
-            return redirect()->back()->with('error', 'كلمة المرور غير صحيحة');
-        }
 
         DB::beginTransaction();
         try {
@@ -92,39 +86,33 @@ class InvoiceController extends Controller
             'customers.*.amount_usd' => 'required|numeric|min:0.01',
             'customers.*.exchange_rate' => 'required|numeric|min:0.0001',
             'sale_date' => 'required|date',
-            'password' => 'required|string',
         ]);
 
-        // التحقق من كلمة المرور
-        if (!Hash::check($request->password, auth()->user()->password)) {
-            return redirect()->back()->with('error', 'كلمة المرور غير صحيحة');
-        }
-
-        // لا نتحقق من المبلغ المباع - يمكن البيع بأي مبلغ
         $totalAmountUsd = collect($request->customers)->sum('amount_usd');
 
         DB::beginTransaction();
         try {
-            $totalAmountIqd = 0;
-            $totalWithTaxIqd = 0;
+            $totalSaleIqd = 0;
 
-            // حساب المجاميع
+            // حساب إجمالي البيع بسعر صرف العملاء
             foreach ($request->customers as $customerData) {
                 $amountIqd = $customerData['amount_usd'] * $customerData['exchange_rate'];
-                $totalAmountIqd += $amountIqd;
+                $totalSaleIqd += $amountIqd;
             }
 
-            $totalWithTaxIqd = $totalAmountIqd + ($totalAmountIqd * ($invoice->tax_percentage / 100));
-            // الربح = إجمالي المبلغ المباع - المبلغ الأصلي للفاتورة
-            $profitIqd = $totalWithTaxIqd - $invoice->total_iqd;
+            // حساب تكلفة الكمية المباعة من الفاتورة الأصلية (بدون ضريبة)
+            $costAmountIqd = $totalAmountUsd * $invoice->exchange_rate;
+
+            // الربح = سعر البيع - التكلفة (بدون ضريبة)
+            $profitIqd = $totalSaleIqd - $costAmountIqd;
 
             // إنشاء عملية البيع
             $sale = InvoiceSale::create([
                 'invoice_id' => $invoice->id,
                 'sale_date' => $request->sale_date,
                 'total_amount_usd' => $totalAmountUsd,
-                'total_amount_iqd' => $totalAmountIqd,
-                'total_with_tax_iqd' => $totalWithTaxIqd,
+                'total_amount_iqd' => $totalSaleIqd,
+                'total_with_tax_iqd' => $totalSaleIqd, // نفس القيمة (الضريبة منفصلة)
                 'profit_iqd' => $profitIqd,
                 'created_by' => auth()->id(),
             ]);
@@ -143,7 +131,8 @@ class InvoiceController extends Controller
             }
 
             // تحديث حالة الفاتورة بناءً على المبلغ المباع
-            if ($totalAmountUsd >= $invoice->amount_usd) {
+            $totalSoldUsd = $invoice->sales()->sum('total_amount_usd') + $totalAmountUsd;
+            if ($totalSoldUsd >= $invoice->amount_usd) {
                 $invoice->status = 'sold';
             } else {
                 $invoice->status = 'partial';
@@ -194,13 +183,7 @@ class InvoiceController extends Controller
             'exchange_rate' => 'required|numeric|min:0.0001',
             'tax_percentage' => 'required|numeric|min:0|max:100',
             'purchase_date' => 'required|date',
-            'password' => 'required|string',
         ]);
-
-        // التحقق من كلمة المرور
-        if (!Hash::check($request->password, auth()->user()->password)) {
-            return redirect()->back()->with('error', 'كلمة المرور غير صحيحة');
-        }
 
         // حساب المبلغ بالدينار العراقي
         $amountIqd = $request->amount_usd * $request->exchange_rate;

@@ -83,27 +83,27 @@ function removeCustomer(button) {
 
 function calculateTotals() {
     let totalAmountUsd = 0;
-    let totalAmountIqd = 0;
+    let totalSaleIqd = 0;
 
     document.querySelectorAll('.amount-usd').forEach(input => {
         totalAmountUsd += parseFloat(input.value) || 0;
     });
 
     document.querySelectorAll('.amount-iqd').forEach(input => {
-        totalAmountIqd += parseFloat(input.value) || 0;
+        totalSaleIqd += parseFloat(input.value) || 0;
     });
 
-    const invoiceTaxPercentage = parseFloat(document.querySelector('meta[name="invoice-tax-percentage"]')?.getAttribute('content') || '0');
-    const invoiceTotal = parseFloat(document.querySelector('meta[name="invoice-total"]')?.getAttribute('content') || '0');
+    // الحصول على سعر صرف الفاتورة الأصلية
+    const invoiceExchangeRate = parseFloat(document.querySelector('meta[name="invoice-exchange-rate"]')?.getAttribute('content') || '0');
 
-    const taxAmount = totalAmountIqd * (invoiceTaxPercentage / 100);
-    const totalWithTax = totalAmountIqd + taxAmount;
-    // الربح = إجمالي المبلغ المباع - المبلغ الأصلي للفاتورة
-    const expectedProfit = totalWithTax - invoiceTotal;
+    // حساب تكلفة الكمية المباعة (بدون ضريبة)
+    const costAmountIqd = totalAmountUsd * invoiceExchangeRate;
+
+    // الربح = سعر البيع - التكلفة (بدون ضريبة)
+    const expectedProfit = totalSaleIqd - costAmountIqd;
 
     document.getElementById('totalAmountUsd').value = Math.round(totalAmountUsd);
-    document.getElementById('totalAmountIqd').value = Math.round(totalAmountIqd);
-    document.getElementById('totalWithTax').value = Math.round(totalWithTax);
+    document.getElementById('totalAmountIqd').value = Math.round(totalSaleIqd);
     document.getElementById('expectedProfit').value = Math.round(expectedProfit);
 }
 

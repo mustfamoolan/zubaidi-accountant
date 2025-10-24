@@ -28,7 +28,8 @@
                                         <th>المبلغ (USD)</th>
                                         <th>سعر الصرف</th>
                                         <th>المبلغ (IQD)</th>
-                                        <th>الضريبة</th>
+                                        <th>نسبة الضريبة</th>
+                                        <th>مبلغ الضريبة</th>
                                         <th>المجموع</th>
                                         <th>الحالة</th>
                                         <th>تاريخ الشراء</th>
@@ -40,9 +41,10 @@
                                         <tr>
                                             <td>{{ $invoice->invoice_number }}</td>
                                             <td>{{ number_format($invoice->amount_usd, 0) }} $</td>
-                                            <td>{{ number_format($invoice->exchange_rate, 4) }}</td>
+                                            <td>{{ number_format($invoice->exchange_rate, 0) }}</td>
                                             <td>{{ number_format($invoice->amount_iqd, 0) }} د.ع</td>
                                             <td>{{ number_format($invoice->tax_percentage, 0) }}%</td>
+                                            <td>{{ number_format($invoice->amount_iqd * ($invoice->tax_percentage / 100), 0) }} د.ع</td>
                                             <td>{{ number_format($invoice->total_iqd, 0) }} د.ع</td>
                                             <td>
                                                 @if($invoice->status === 'available')

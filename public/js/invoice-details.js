@@ -37,7 +37,7 @@ function displaySaleDetails(sale, customers) {
             <div class="border rounded p-2 mb-2">
                 <p class="mb-1"><strong>العميل ${index + 1}:</strong> ${customer.name}</p>
                 <p class="mb-1"><strong>المبلغ بالدولار:</strong> ${parseFloat(customer.amount_usd).toLocaleString()} $</p>
-                <p class="mb-1"><strong>سعر الصرف:</strong> ${parseFloat(customer.exchange_rate).toFixed(4)}</p>
+                <p class="mb-1"><strong>سعر الصرف:</strong> ${Math.round(parseFloat(customer.exchange_rate))}</p>
                 <p class="mb-0"><strong>المبلغ بالدينار:</strong> ${parseFloat(customer.amount_iqd).toLocaleString()} د.ع</p>
             </div>
         `;

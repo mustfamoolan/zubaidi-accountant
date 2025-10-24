@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const exchangeRateInput = document.querySelector('input[name="exchange_rate"]');
     const taxPercentageInput = document.querySelector('input[name="tax_percentage"]');
     const amountIqdDisplay = document.getElementById('amount_iqd');
+    const taxAmountIqdDisplay = document.getElementById('tax_amount_iqd');
     const totalIqdDisplay = document.getElementById('total_iqd');
 
     function calculateAmounts() {
@@ -12,10 +13,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const taxPercentage = parseFloat(taxPercentageInput.value) || 0;
 
         const amountIqd = amountUsd * exchangeRate;
-        const taxAmount = amountIqd * (taxPercentage / 100);
-        const totalIqd = amountIqd + taxAmount;
+        const taxAmountIqd = amountIqd * (taxPercentage / 100);
+        const totalIqd = amountIqd + taxAmountIqd;
 
         amountIqdDisplay.value = Math.round(amountIqd);
+        taxAmountIqdDisplay.value = Math.round(taxAmountIqd);
         totalIqdDisplay.value = Math.round(totalIqd);
     }
 

@@ -2,8 +2,7 @@
 
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="invoice-tax-percentage" content="{{ $invoice->tax_percentage }}">
-    <meta name="invoice-total" content="{{ $invoice->total_iqd }}">
+    <meta name="invoice-exchange-rate" content="{{ $invoice->exchange_rate }}">
     <script>
         window.customersData = @json($customers);
     </script>
@@ -20,21 +19,17 @@
                         <h6>تفاصيل الفاتورة الأصلية:</h6>
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>المبلغ بالدولار:</strong> {{ number_format($invoice->amount_usd, 0) }} $
+                                <strong>المبلغ الأصلي:</strong> {{ number_format($invoice->amount_usd, 0) }} $
                             </div>
                             <div class="col-md-3">
-                                <strong>المبلغ بالدينار:</strong> {{ number_format($invoice->amount_iqd, 0) }} د.ع
+                                <strong>المباع:</strong> {{ number_format($invoice->getSoldAmountUsd(), 0) }} $
                             </div>
                             <div class="col-md-3">
-                                <strong>نسبة الضريبة:</strong> {{ number_format($invoice->tax_percentage, 0) }}%
+                                <strong>المتبقي:</strong> {{ number_format($invoice->getAvailableAmountUsd(), 0) }} $
                             </div>
                             <div class="col-md-3">
-                                <strong>المجموع:</strong> {{ number_format($invoice->total_iqd, 0) }} د.ع
+                                <strong>سعر الصرف الأصلي:</strong> {{ number_format($invoice->exchange_rate, 0) }}
                             </div>
-                        </div>
-                        <div class="mt-2">
-                            <strong>المبلغ الأصلي:</strong>
-                            <span class="text-info fw-bold">{{ number_format($invoice->amount_usd, 0) }} $</span>
                         </div>
                     </div>
 
@@ -63,7 +58,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">إجمالي المبلغ بالدولار</label>
+                                    <label class="form-label">إجمالي الكمية بالدولار</label>
                                     <input type="text" class="form-control" id="totalAmountUsd" readonly>
                                 </div>
                             </div>
@@ -76,23 +71,12 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">المجموع مع الضريبة</label>
-                                    <input type="text" class="form-control" id="totalWithTax" readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="mb-3">
                                     <label class="form-label">الربح المتوقع</label>
                                     <input type="text" class="form-control" id="expectedProfit" readonly>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">كلمة المرور للتأكيد <span class="text-danger">*</span></label>
-                            <input type="password" class="form-control" name="password" required placeholder="أدخل كلمة المرور للتأكيد">
                         </div>
 
                         <div class="d-flex gap-2">

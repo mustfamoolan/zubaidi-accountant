@@ -33,7 +33,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">سعر الصرف:</label>
-                                <p class="mb-0">{{ number_format($invoice->exchange_rate, 4) }}</p>
+                                <p class="mb-0">{{ number_format($invoice->exchange_rate, 0) }}</p>
                             </div>
                         </div>
                     </div>
@@ -49,6 +49,36 @@
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">نسبة الضريبة:</label>
                                 <p class="mb-0">{{ number_format($invoice->tax_percentage, 0) }}%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">مبلغ الضريبة بالدينار العراقي:</label>
+                                <p class="mb-0 text-warning fw-bold">{{ number_format($invoice->amount_iqd * ($invoice->tax_percentage / 100), 0) }} د.ع</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">المبلغ الكلي مع الضريبة:</label>
+                                <p class="mb-0 text-primary fw-bold">{{ number_format($invoice->total_iqd, 0) }} د.ع</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">المبلغ المباع:</label>
+                                <p class="mb-0">{{ number_format($invoice->getSoldAmountUsd(), 0) }} $</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">المبلغ المتبقي:</label>
+                                <p class="mb-0">{{ number_format($invoice->getAvailableAmountUsd(), 0) }} $</p>
                             </div>
                         </div>
                     </div>

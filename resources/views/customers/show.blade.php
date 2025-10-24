@@ -94,7 +94,7 @@
                                                 <td>{{ $purchase->sale->invoice->invoice_number }}</td>
                                                 <td>{{ $purchase->sale->sale_date->format('Y-m-d') }}</td>
                                                 <td>{{ number_format($purchase->amount_usd, 0) }} $</td>
-                                                <td>{{ number_format($purchase->exchange_rate, 4) }}</td>
+                                                <td>{{ number_format($purchase->exchange_rate, 0) }}</td>
                                                 <td class="text-success fw-bold">{{ number_format($purchase->amount_iqd, 0) }} د.ع</td>
                                                 <td>{{ $purchase->sale->createdBy->name ?? 'غير محدد' }}</td>
                                                 <td>
