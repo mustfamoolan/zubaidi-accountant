@@ -54,6 +54,39 @@ class CustomerController extends Controller
         return redirect()->route('customers.show', $customer->id)->with('success', 'تم تحديث العميل بنجاح');
     }
 
+    public function store(Request $request)
+    {
+        // التحقق إذا كان الطلب AJAX (يتوقع JSON response)
+        if ($request->wantsJson() || $request->ajax()) {
+            $request->validate([
+                'name' => 'required|string|max:255|unique:customers,name',
+            ]);
+
+            $customer = Customer::create([
+                'name' => $request->name,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'customer' => [
+                    'id' => $customer->id,
+                    'name' => $customer->name,
+                ]
+            ]);
+        }
+
+        // إذا كان طلب عادي (form submission)
+        $request->validate([
+            'name' => 'required|string|max:255|unique:customers,name',
+        ]);
+
+        $customer = Customer::create([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('customers.index')->with('success', 'تم إضافة العميل بنجاح');
+    }
+
     public function destroy($id)
     {
         $customer = Customer::findOrFail($id);
