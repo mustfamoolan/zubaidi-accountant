@@ -19,8 +19,8 @@
                                         <th>التاريخ</th>
                                         <th>النوع</th>
                                         <th>المبلغ</th>
-                                        <th>الرصيد بعد العملية</th>
                                         <th>الوصف</th>
+                                        <th>الرصيد بعد العملية</th>
                                         <th>المستخدم</th>
                                     </tr>
                                 </thead>
@@ -46,8 +46,8 @@
                                                     <span class="text-warning fw-bold">-{{ number_format($transaction->amount, 0) }} د.ع</span>
                                                 @endif
                                             </td>
-                                            <td>{{ number_format($transaction->balance_after, 0) }} د.ع</td>
                                             <td>{{ $transaction->description ?? '-' }}</td>
+                                            <td>{{ number_format($transaction->balance_after, 0) }} د.ع</td>
                                             <td>{{ $transaction->createdBy->name }}</td>
                                         </tr>
                                     @endforeach
