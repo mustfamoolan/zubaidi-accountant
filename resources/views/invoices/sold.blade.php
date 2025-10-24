@@ -46,9 +46,14 @@
                                             </td>
                                             <td>{{ $sale->createdBy->name }}</td>
                                             <td>
-                                                <button class="btn btn-sm btn-info" onclick="showSaleDetails({{ $sale->id }})">
-                                                    <i class="ri-eye-line"></i> تفاصيل العملاء
-                                                </button>
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-sm btn-info" onclick="showSaleDetails({{ $sale->id }})">
+                                                        <i class="ri-eye-line"></i> تفاصيل العملاء
+                                                    </button>
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteSale({{ $sale->id }})">
+                                                        <i class="ri-delete-bin-line"></i> حذف البيع
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -89,4 +94,33 @@
     </div>
 
     <script src="{{ asset('js/invoice-sold.js') }}"></script>
+
+    <script>
+        function deleteSale(saleId) {
+            if (confirm('هل أنت متأكد من حذف عملية البيع؟ سيتم إعادة المبلغ للفاتورة الأصلية.')) {
+                // إنشاء form لحذف العملية
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/invoice-sales/${saleId}`;
+
+                // إضافة CSRF token
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                form.appendChild(csrfToken);
+
+                // إضافة method spoofing للحذف
+                const methodField = document.createElement('input');
+                methodField.type = 'hidden';
+                methodField.name = '_method';
+                methodField.value = 'DELETE';
+                form.appendChild(methodField);
+
+                // إضافة form للصفحة وتنفيذه
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
 @endsection
