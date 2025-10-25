@@ -8,17 +8,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalIqdDisplay = document.getElementById('total_iqd');
 
     function calculateAmounts() {
-        const amountUsd = parseFloat(amountUsdInput.value) || 0;
-        const exchangeRate = parseFloat(exchangeRateInput.value) || 0;
-        const taxPercentage = parseFloat(taxPercentageInput.value) || 0;
+        // إزالة الفواصل قبل التحويل إلى رقم
+        const amountUsd = parseFloat(amountUsdInput.value.replace(/,/g, '')) || 0;
+        const exchangeRate = parseFloat(exchangeRateInput.value.replace(/,/g, '')) || 0;
+        const taxPercentage = parseFloat(taxPercentageInput.value.replace(/,/g, '')) || 0;
 
         const amountIqd = amountUsd * exchangeRate;
         const taxAmountIqd = amountIqd * (taxPercentage / 100);
         const totalIqd = amountIqd + taxAmountIqd;
 
-        amountIqdDisplay.value = Math.round(amountIqd);
-        taxAmountIqdDisplay.value = Math.round(taxAmountIqd);
-        totalIqdDisplay.value = Math.round(totalIqd);
+        amountIqdDisplay.value = Math.round(amountIqd).toLocaleString();
+        taxAmountIqdDisplay.value = Math.round(taxAmountIqd).toLocaleString();
+        totalIqdDisplay.value = Math.round(totalIqd).toLocaleString();
     }
 
     amountUsdInput.addEventListener('input', calculateAmounts);

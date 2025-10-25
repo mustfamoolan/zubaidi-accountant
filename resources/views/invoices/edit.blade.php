@@ -111,17 +111,18 @@
         });
 
         function calculateAmounts() {
-            const amountUsd = parseFloat(document.getElementById('amountUsd').value) || 0;
-            const exchangeRate = parseFloat(document.getElementById('exchangeRate').value) || 0;
-            const taxPercentage = parseFloat(document.getElementById('taxPercentage').value) || 0;
+            // إزالة الفواصل قبل التحويل إلى رقم
+            const amountUsd = parseFloat(document.getElementById('amountUsd').value.replace(/,/g, '')) || 0;
+            const exchangeRate = parseFloat(document.getElementById('exchangeRate').value.replace(/,/g, '')) || 0;
+            const taxPercentage = parseFloat(document.getElementById('taxPercentage').value.replace(/,/g, '')) || 0;
 
             const amountIqd = amountUsd * exchangeRate;
             const taxAmountIqd = amountIqd * (taxPercentage / 100);
             const totalIqd = amountIqd + taxAmountIqd;
 
-            document.getElementById('amountIqd').value = Math.round(amountIqd);
-            document.getElementById('taxAmountIqd').value = Math.round(taxAmountIqd);
-            document.getElementById('totalIqd').value = Math.round(totalIqd);
+            document.getElementById('amountIqd').value = Math.round(amountIqd).toLocaleString();
+            document.getElementById('taxAmountIqd').value = Math.round(taxAmountIqd).toLocaleString();
+            document.getElementById('totalIqd').value = Math.round(totalIqd).toLocaleString();
         }
     </script>
 @endsection
