@@ -40,13 +40,18 @@ class InvestorTransaction extends Model
         return $query->where('type', 'deposit');
     }
 
-    public function scopeWithdrawals($query)
-    {
-        return $query->where('type', 'withdrawal');
-    }
-
     public function scopeProfits($query)
     {
         return $query->where('type', 'profit');
+    }
+
+    public function scopeProfitWithdrawals($query)
+    {
+        return $query->where('type', 'profit_withdrawal');
+    }
+
+    public function scopeSharedExpenses($query)
+    {
+        return $query->where('type', 'shared_expense');
     }
 }

@@ -41,6 +41,8 @@ class InvestorController extends Controller
             'initial_investment' => 0,
             'current_balance' => 0,
             'total_profits' => 0,
+            'profit_balance' => 0,
+            'total_withdrawals' => 0,
             'notes' => $request->notes,
             'status' => 'active', // افتراضياً نشط
         ]);
@@ -55,7 +57,7 @@ class InvestorController extends Controller
         }])->findOrFail($id);
 
         $totalDeposits = $investor->transactions()->deposits()->sum('amount');
-        $totalWithdrawals = $investor->transactions()->withdrawals()->sum('amount');
+        $totalWithdrawals = $investor->transactions()->profitWithdrawals()->sum('amount');
         $totalProfits = $investor->transactions()->profits()->sum('amount');
 
         return view('investors.show', compact(
@@ -132,7 +134,7 @@ class InvestorController extends Controller
         }
     }
 
-    public function withdraw(Request $request)
+    public function withdrawProfit(Request $request)
     {
         $request->validate([
             'investor_id' => 'required|exists:investors,id',
@@ -144,24 +146,15 @@ class InvestorController extends Controller
         $investor = Investor::findOrFail($request->investor_id);
 
         try {
-            $investor->withdraw(
+            $investor->withdrawProfit(
                 $request->amount,
                 $request->description,
                 $request->transaction_date
             );
 
-            // إضافة المعاملة لحساب رأس المال أيضاً
-            $capitalAccount = \App\Models\CapitalAccount::first();
-            if ($capitalAccount) {
-                $description = ($request->description ? $request->description . ' - ' : '') . 'للمستثمر: ' . $investor->name;
-                $capitalAccount->withdraw(
-                    $request->amount,
-                    $description,
-                    $request->transaction_date
-                );
-            }
+            // لا نخصم من رأس المال
 
-            return redirect()->back()->with('success', 'تم السحب بنجاح من المستثمر: ' . $investor->name);
+            return redirect()->back()->with('success', 'تم سحب الربح بنجاح للمستثمر: ' . $investor->name);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ: ' . $e->getMessage());
         }
@@ -169,9 +162,6 @@ class InvestorController extends Controller
 
     public function addProfit(Request $request)
     {
-        // إضافة debugging
-        \Log::info('addProfit request data:', $request->all());
-
         $request->validate([
             'investor_id' => 'required|exists:investors,id',
             'amount' => 'required|numeric|min:0.01',
@@ -188,20 +178,10 @@ class InvestorController extends Controller
                 $request->transaction_date
             );
 
-            // إضافة الربح لحساب رأس المال أيضاً
-            $capitalAccount = \App\Models\CapitalAccount::first();
-            if ($capitalAccount) {
-                $description = ($request->description ? $request->description . ' - ' : '') . 'ربح من المستثمر: ' . $investor->name;
-                $capitalAccount->deposit(
-                    $request->amount,
-                    $description,
-                    $request->transaction_date
-                );
-            }
+            // لا نضيف لرأس المال
 
             return redirect()->back()->with('success', 'تم إضافة الربح بنجاح للمستثمر: ' . $investor->name);
         } catch (\Exception $e) {
-            \Log::error('addProfit error:', ['error' => $e->getMessage()]);
             return redirect()->back()->with('error', 'حدث خطأ: ' . $e->getMessage());
         }
     }

@@ -35,6 +35,20 @@
                         <p class="mb-0 text-success fw-bold">{{ number_format($investor->total_profits, 0) }} د.ع</p>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">رصيد الأرباح:</label>
+                        @if($investor->profit_balance >= 0)
+                            <p class="mb-0 text-success fw-bold">{{ number_format($investor->profit_balance, 0) }} د.ع</p>
+                        @else
+                            <p class="mb-0 text-danger fw-bold">دين: {{ number_format(abs($investor->profit_balance), 0) }} د.ع</p>
+                        @endif
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">إجمالي السحوبات:</label>
+                        <p class="mb-0 text-danger fw-bold">{{ number_format($investor->total_withdrawals, 0) }} د.ع</p>
+                    </div>
+
                     @if($investor->notes)
                         <div class="mb-3">
                             <label class="form-label fw-semibold">ملاحظات:</label>
@@ -77,7 +91,7 @@
                                               class="fs-32 text-danger avatar-title"></iconify-icon>
                             </div>
                             <h5 class="text-danger">{{ number_format($totalWithdrawals, 0) }} د.ع</h5>
-                            <p class="text-muted mb-0">إجمالي السحوبات</p>
+                            <p class="text-muted mb-0">إجمالي سحوبات الأرباح</p>
                         </div>
                     </div>
                 </div>
@@ -110,7 +124,7 @@
                             <i class="ri-add-line me-1"></i> إضافة إيداع
                         </button>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#withdrawModal">
-                            <i class="ri-subtract-line me-1"></i> إضافة سحب
+                            <i class="ri-subtract-line me-1"></i> سحب ربح
                         </button>
                         <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#profitModal">
                             <i class="ri-trophy-line me-1"></i> إضافة ربح
@@ -150,13 +164,37 @@
                                             <td>
                                                 @if($transaction->type === 'deposit')
                                                     <span class="badge bg-success">إيداع</span>
-                                                @elseif($transaction->type === 'withdrawal')
-                                                    <span class="badge bg-danger">سحب</span>
-                                                @else
+                                                @elseif($transaction->type === 'profit')
                                                     <span class="badge bg-info">ربح</span>
+                                                @elseif($transaction->type === 'profit_withdrawal')
+                                                    <span class="badge bg-danger">سحب ربح</span>
+                                                @elseif($transaction->type === 'shared_expense')
+                                                    @if(str_contains($transaction->description, 'دين على المستثمر'))
+                                                        <span class="badge bg-warning">دين</span>
+                                                    @else
+                                                        <span class="badge bg-warning">مصروف مشترك</span>
+                                                    @endif
                                                 @endif
                                             </td>
-                                                <td>{{ number_format($transaction->amount, 0) }} د.ع</td>
+                                            <td>
+                                                @if($transaction->type === 'deposit')
+                                                    <span class="text-success fw-bold">+{{ number_format($transaction->amount, 0) }} د.ع</span>
+                                                @elseif($transaction->type === 'profit')
+                                                    @if($transaction->amount == 0)
+                                                        <span class="text-info fw-bold">تسوية</span>
+                                                    @else
+                                                        <span class="text-info fw-bold">+{{ number_format($transaction->amount, 0) }} د.ع</span>
+                                                    @endif
+                                                @elseif($transaction->type === 'profit_withdrawal')
+                                                    <span class="text-danger fw-bold">-{{ number_format($transaction->amount, 0) }} د.ع</span>
+                                                @elseif($transaction->type === 'shared_expense')
+                                                    @if($transaction->amount == 0)
+                                                        <span class="text-warning fw-bold">دين</span>
+                                                    @else
+                                                        <span class="text-warning fw-bold">-{{ number_format($transaction->amount, 0) }} د.ع</span>
+                                                    @endif
+                                                @endif
+                                            </td>
                                                 <td>{{ number_format($transaction->balance_after, 0) }} د.ع</td>
                                             <td>{{ $transaction->description ?? '-' }}</td>
                                             <td>{{ $transaction->createdBy->name }}</td>
@@ -203,10 +241,6 @@
                                 <label class="form-label">تاريخ العملية</label>
                                 <input type="date" class="form-control" name="transaction_date" value="{{ now()->toDateString() }}">
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">كلمة المرور للتأكيد <span class="text-danger">*</span></label>
-                                <input type="password" class="form-control" name="password" required placeholder="أدخل كلمة المرور للتأكيد">
-                            </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
@@ -222,10 +256,10 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">إضافة سحب للمستثمر</h5>
+                    <h5 class="modal-title">سحب ربح من المستثمر</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="{{ route('investors.withdraw') }}" method="POST">
+                <form action="{{ route('investors.withdraw-profit') }}" method="POST">
                     @csrf
                     <input type="hidden" name="investor_id" value="{{ $investor->id }}">
                     <div class="modal-body">
@@ -241,14 +275,10 @@
                                 <label class="form-label">تاريخ العملية</label>
                                 <input type="date" class="form-control" name="transaction_date" value="{{ now()->toDateString() }}">
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">كلمة المرور للتأكيد <span class="text-danger">*</span></label>
-                                <input type="password" class="form-control" name="password" required placeholder="أدخل كلمة المرور للتأكيد">
-                            </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                        <button type="submit" class="btn btn-danger">إضافة السحب</button>
+                        <button type="submit" class="btn btn-danger">سحب الربح</button>
                     </div>
                 </form>
             </div>
@@ -278,10 +308,6 @@
                             <div class="mb-3">
                                 <label class="form-label">تاريخ العملية</label>
                                 <input type="date" class="form-control" name="transaction_date" value="{{ now()->toDateString() }}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">كلمة المرور للتأكيد <span class="text-danger">*</span></label>
-                                <input type="password" class="form-control" name="password" required placeholder="أدخل كلمة المرور للتأكيد">
                             </div>
                     </div>
                     <div class="modal-footer">

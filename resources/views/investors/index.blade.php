@@ -92,6 +92,7 @@
                                             <th>الاسم</th>
                                             <th>الرصيد الحالي</th>
                                             <th>إجمالي الأرباح</th>
+                                            <th>رصيد الأرباح</th>
                                             <th>الحالة</th>
                                             <th>الإجراءات</th>
                                         </tr>
@@ -116,6 +117,13 @@
                                             </td>
                                             <td>{{ number_format($investor->current_balance, 0) }} د.ع</td>
                                             <td>{{ number_format($investor->total_profits, 0) }} د.ع</td>
+                                            <td>
+                                                @if($investor->profit_balance >= 0)
+                                                    <span class="text-success fw-bold">{{ number_format($investor->profit_balance, 0) }} د.ع</span>
+                                                @else
+                                                    <span class="text-danger fw-bold">دين: {{ number_format(abs($investor->profit_balance), 0) }} د.ع</span>
+                                                @endif
+                                            </td>
                                             <td>
                                                 @if($investor->status === 'active')
                                                     <span class="badge bg-success">نشط</span>

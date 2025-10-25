@@ -40,26 +40,6 @@ class CapitalAccount extends Model
         ]);
     }
 
-    public function withdraw($amount, $description = null, $transactionDate = null)
-    {
-        if ($this->current_balance < $amount) {
-            throw new \Exception('الرصيد غير كافي للسحب');
-        }
-
-        $this->current_balance -= $amount;
-        $this->save();
-
-        return $this->transactions()->create([
-            'capital_account_id' => $this->id,
-            'type' => 'withdrawal',
-            'amount' => $amount,
-            'balance_after' => $this->current_balance,
-            'description' => $description,
-            'transaction_date' => $transactionDate ?? now()->toDateString(),
-            'created_by' => auth()->id(),
-        ]);
-    }
-
     public function getBalance()
     {
         return $this->current_balance;

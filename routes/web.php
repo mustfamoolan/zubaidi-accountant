@@ -52,13 +52,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/capital', [CapitalController::class, 'index'])->name('capital.index');
     Route::get('/capital/transactions', [CapitalController::class, 'transactions'])->name('capital.transactions');
     Route::post('/capital/deposit', [CapitalController::class, 'deposit'])->name('capital.deposit');
-    Route::post('/capital/withdraw', [CapitalController::class, 'withdraw'])->name('capital.withdraw');
     Route::post('/capital/shared-expense', [CapitalController::class, 'sharedExpense'])->name('capital.shared-expense');
 
     // المستثمرين
     Route::resource('investors', InvestorController::class);
     Route::post('/investors/deposit', [InvestorController::class, 'deposit'])->name('investors.deposit');
-    Route::post('/investors/withdraw', [InvestorController::class, 'withdraw'])->name('investors.withdraw');
+    Route::post('/investors/withdraw-profit', [InvestorController::class, 'withdrawProfit'])->name('investors.withdraw-profit');
     Route::post('/investors/profit', [InvestorController::class, 'addProfit'])->name('investors.profit');
 });
 
