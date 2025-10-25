@@ -22,12 +22,12 @@ class RoutingController extends BaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function index(Request $request)
     {
         if (Auth::user()) {
-            return redirect('/dashboards/analytics');
+            return redirect('/dashboard');
         } else {
             return redirect('login');
         }
@@ -36,7 +36,7 @@ class RoutingController extends BaseController
     /**
      * Display a view based on first route param
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function root(Request $request, $first)
     {
