@@ -12,7 +12,7 @@
                                 <iconify-icon icon="solar:money-bag-broken"
                                               class="fs-32 text-primary avatar-title"></iconify-icon>
                             </div>
-                            <p class="text-muted mb-2 mt-3">الرصيد الحالي</p>
+                            <p class="text-muted mb-2 mt-3">رأس المال</p>
                             <h3 class="text-dark fw-bold mb-0">{{ number_format($capitalAccount->current_balance, 0) }} د.ع</h3>
                         </div>
                     </div>
