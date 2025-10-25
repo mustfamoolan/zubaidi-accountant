@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 class CapitalController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // إنشاء حساب رأس المال إذا لم يكن موجوداً
         $capitalAccount = CapitalAccount::first();
@@ -26,7 +26,10 @@ class CapitalController extends Controller
         $totalDeposits = CapitalTransaction::deposits()->sum('amount');
         $totalWithdrawals = CapitalTransaction::withdrawals()->sum('amount');
         $totalSharedExpenses = CapitalTransaction::sharedExpenses()->sum('amount');
-        $recentTransactions = CapitalTransaction::with('createdBy')->recent(10)->get();
+        $perPage = $request->get('per_page', 10);
+        $recentTransactions = CapitalTransaction::with('createdBy')
+            ->orderBy('transaction_date', 'desc')
+            ->paginate($perPage);
 
         // إحصائيات المستثمرين
         $totalInvestors = Investor::active()->count();
@@ -47,11 +50,12 @@ class CapitalController extends Controller
         ));
     }
 
-    public function transactions()
+    public function transactions(Request $request)
     {
+        $perPage = $request->get('per_page', 20);
         $transactions = CapitalTransaction::with('createdBy')
             ->orderBy('transaction_date', 'desc')
-            ->paginate(20);
+            ->paginate($perPage);
 
         return view('capital.transactions', compact('transactions'));
     }
