@@ -171,7 +171,7 @@
                                                 @elseif($transaction->type === 'profit')
                                                     <span class="badge bg-info">ربح</span>
                                                 @elseif($transaction->type === 'profit_withdrawal')
-                                                    <span class="badge bg-danger">سحب ربح</span>
+                                                    <span class="badge bg-danger">سحب</span>
                                                 @elseif($transaction->type === 'shared_expense')
                                                     @if(str_contains($transaction->description, 'دين على المستثمر'))
                                                         <span class="badge bg-warning">دين</span>
