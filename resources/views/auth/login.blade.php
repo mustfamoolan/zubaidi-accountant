@@ -32,7 +32,7 @@
                             <label class="form-label" for="example-email">البريد الإلكتروني</label>
                             <input type="email" id="example-email" name="email"
                                    class="form-control bg-light bg-opacity-50 border-light py-2"
-                                   placeholder="أدخل بريدك الإلكتروني" value="admin@alzubaidi.com">
+                                   placeholder="أدخل بريدك الإلكتروني">
                         </div>
                         <div class="mb-3">
                             <a href="{{ route('second', ['auth', 'password'])}}"
@@ -41,7 +41,7 @@
                             <label class="form-label" for="example-password">كلمة المرور</label>
                             <input type="password" id="example-password"
                                    class="form-control bg-light bg-opacity-50 border-light py-2"
-                                   placeholder="أدخل كلمة المرور" name="password" value="12345678">
+                                   placeholder="أدخل كلمة المرور" name="password">
                         </div>
                         <div class="mb-3">
                             <div class="form-check">
