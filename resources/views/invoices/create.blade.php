@@ -37,7 +37,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">مبلغ الفاتورة بالدولار <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.01" class="form-control @error('amount_usd') is-invalid @enderror"
+                                    <input type="text" class="form-control @error('amount_usd') is-invalid @enderror"
                                            name="amount_usd" value="{{ old('amount_usd') }}" required>
                                     @error('amount_usd')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -47,7 +47,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">سعر الصرف <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.0001" class="form-control @error('exchange_rate') is-invalid @enderror"
+                                    <input type="text" class="form-control @error('exchange_rate') is-invalid @enderror"
                                            name="exchange_rate" value="{{ old('exchange_rate') }}" required>
                                     @error('exchange_rate')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -66,7 +66,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">نسبة الضريبة (%) <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.01" class="form-control @error('tax_percentage') is-invalid @enderror"
+                                    <input type="text" class="form-control @error('tax_percentage') is-invalid @enderror"
                                            name="tax_percentage" value="{{ old('tax_percentage', 0) }}" required min="0" max="100">
                                     @error('tax_percentage')
                                         <div class="invalid-feedback">{{ $message }}</div>

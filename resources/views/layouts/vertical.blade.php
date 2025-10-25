@@ -49,6 +49,9 @@
 @include("layouts.partials/right-sidebar")
 @include('layouts.partials/footer-scripts')
 
+<!-- Number Formatter Script -->
+<script src="{{ asset('js/number-formatter.js') }}"></script>
+
 </body>
 
 </html>

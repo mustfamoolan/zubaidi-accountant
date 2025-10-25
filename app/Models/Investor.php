@@ -128,6 +128,9 @@ class Investor extends Model
             $this->current_balance -= $amount;
         }
 
+        // إضافة المبلغ لإجمالي السحوبات
+        $this->total_withdrawals += $amount;
+
         $this->save();
 
         // تسجيل المعاملة في سجل الحركات

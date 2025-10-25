@@ -57,7 +57,7 @@ class InvestorController extends Controller
         }])->findOrFail($id);
 
         $totalDeposits = $investor->transactions()->deposits()->sum('amount');
-        $totalWithdrawals = $investor->transactions()->profitWithdrawals()->sum('amount');
+        $totalWithdrawals = $investor->total_withdrawals; // استخدام القيمة من قاعدة البيانات مباشرة
         $totalProfits = $investor->transactions()->profits()->sum('amount');
 
         return view('investors.show', compact(

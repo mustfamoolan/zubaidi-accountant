@@ -37,7 +37,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">مبلغ الفاتورة بالدولار <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.01" class="form-control" name="amount_usd" id="amountUsd" value="{{ old('amount_usd', $invoice->amount_usd) }}" required>
+                                    <input type="text" class="form-control" name="amount_usd" id="amountUsd" value="{{ old('amount_usd', $invoice->amount_usd) }}" required>
                                     @error('amount_usd')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -46,7 +46,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">سعر الصرف <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.0001" class="form-control" name="exchange_rate" id="exchangeRate" value="{{ old('exchange_rate', $invoice->exchange_rate) }}" required>
+                                    <input type="text" class="form-control" name="exchange_rate" id="exchangeRate" value="{{ old('exchange_rate', $invoice->exchange_rate) }}" required>
                                     @error('exchange_rate')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -64,7 +64,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">نسبة الضريبة (%) <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.01" class="form-control" name="tax_percentage" id="taxPercentage" value="{{ old('tax_percentage', $invoice->tax_percentage) }}" required min="0" max="100">
+                                    <input type="text" class="form-control" name="tax_percentage" id="taxPercentage" value="{{ old('tax_percentage', $invoice->tax_percentage) }}" required min="0" max="100">
                                     @error('tax_percentage')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror

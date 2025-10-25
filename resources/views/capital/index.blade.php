@@ -187,7 +187,7 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">المبلغ</label>
-                            <input type="number" step="0.01" class="form-control" name="amount" required>
+                            <input type="text" class="form-control" name="amount" required placeholder="أدخل المبلغ">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">المستثمر (اختياري)</label>
@@ -229,7 +229,7 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">المبلغ <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" class="form-control" name="amount" required>
+                            <input type="text" class="form-control" name="amount" required placeholder="أدخل المبلغ">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">الوصف</label>
