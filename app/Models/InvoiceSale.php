@@ -34,7 +34,7 @@ class InvoiceSale extends Model
 
     public function items()
     {
-        return $this->hasMany(InvoiceSaleItem::class);
+        return $this->hasMany(InvoiceSaleItem::class, 'invoice_sale_id');
     }
 
     public function createdBy()

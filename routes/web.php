@@ -46,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
 
     // API للفواتير المباعة
+    Route::get('/api/sales/{id}/customers', [InvoiceController::class, 'getSaleCustomers'])->name('api.sales.customers');
     Route::delete('/invoice-sales/{saleId}', [InvoiceController::class, 'destroySale'])->name('invoice-sales.destroy');
 
     // رأس المال
