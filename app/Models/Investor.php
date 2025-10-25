@@ -52,13 +52,27 @@ class Investor extends Model
 
     public function withdrawProfit($amount, $description = null, $transactionDate = null)
     {
-        if ($this->profit_balance < $amount) {
-            throw new \Exception('رصيد الأرباح غير كافي للسحب');
+        // التحقق من الرصيد الكلي المتبقي بدلاً من رصيد الأرباح فقط
+        if ($this->current_balance < $amount) {
+            throw new \Exception('الرصيد المتبقي غير كافي للسحب. الرصيد المتاح: ' . number_format((float)$this->current_balance, 0) . ' د.ع');
         }
 
-        $this->profit_balance -= $amount;
-        $this->total_withdrawals += $amount;
-        $this->current_balance -= $amount;
+        // خصم من الرصيد الكلي
+        $newCurrentBalance = $this->current_balance - $amount;
+        $newTotalWithdrawals = $this->total_withdrawals + $amount;
+        $this->current_balance = $newCurrentBalance;
+        $this->total_withdrawals = $newTotalWithdrawals;
+
+        // تحديث رصيد الأرباح فقط إذا كان موجب
+        if ($this->profit_balance > 0) {
+            if ($this->profit_balance >= $amount) {
+                $newProfitBalance = $this->profit_balance - $amount;
+                $this->profit_balance = $newProfitBalance;
+            } else {
+                $this->profit_balance = 0;
+            }
+        }
+
         $this->save();
 
         return $this->transactions()->create([
@@ -94,7 +108,7 @@ class Investor extends Model
 
             // إذا كان هناك دين وتم تسويته، أضف معاملة لتوضيح تسوية الدين
             if ($oldProfitBalance < 0 && $this->profit_balance >= 0) {
-                $debtAmount = abs($oldProfitBalance);
+                $debtAmount = abs((float)$oldProfitBalance);
                 $remainingAmount = $amount - $debtAmount;
 
                 $this->transactions()->create([
@@ -121,15 +135,20 @@ class Investor extends Model
 
         if ($this->profit_balance < $amount) {
             // السماح بالرصيد السالب (دين)
-            $this->profit_balance -= $amount;
-            $this->current_balance -= $amount;
+            $newProfitBalance = $this->profit_balance - $amount;
+            $newCurrentBalance = $this->current_balance - $amount;
+            $this->profit_balance = $newProfitBalance;
+            $this->current_balance = $newCurrentBalance;
         } else {
-            $this->profit_balance -= $amount;
-            $this->current_balance -= $amount;
+            $newProfitBalance = $this->profit_balance - $amount;
+            $newCurrentBalance = $this->current_balance - $amount;
+            $this->profit_balance = $newProfitBalance;
+            $this->current_balance = $newCurrentBalance;
         }
 
         // إضافة المبلغ لإجمالي السحوبات
-        $this->total_withdrawals += $amount;
+        $newTotalWithdrawals = $this->total_withdrawals + $amount;
+        $this->total_withdrawals = $newTotalWithdrawals;
 
         $this->save();
 
@@ -149,7 +168,7 @@ class Investor extends Model
                 'type' => 'shared_expense',
                 'amount' => 0, // مبلغ صفر لأن الدين مُسجل بالفعل
                 'balance_after' => $this->current_balance,
-                'description' => 'دين على المستثمر: ' . number_format(abs($this->profit_balance), 0) . ' د.ع',
+                'description' => 'دين على المستثمر: ' . number_format(abs((float)$this->profit_balance), 0) . ' د.ع',
                 'transaction_date' => $transactionDate,
                 'created_by' => auth()->id(),
             ]);

@@ -30,25 +30,6 @@
                         <p class="mb-0 text-primary fw-bold">{{ number_format($investor->current_balance, 0) }} د.ع</p>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">إجمالي الأرباح:</label>
-                        <p class="mb-0 text-success fw-bold">{{ number_format($investor->total_profits, 0) }} د.ع</p>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">رصيد الأرباح:</label>
-                        @if($investor->profit_balance >= 0)
-                            <p class="mb-0 text-success fw-bold">{{ number_format($investor->profit_balance, 0) }} د.ع</p>
-                        @else
-                            <p class="mb-0 text-danger fw-bold">دين: {{ number_format(abs($investor->profit_balance), 0) }} د.ع</p>
-                        @endif
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">إجمالي السحوبات:</label>
-                        <p class="mb-0 text-danger fw-bold">{{ number_format($investor->total_withdrawals, 0) }} د.ع</p>
-                    </div>
-
                     @if($investor->notes)
                         <div class="mb-3">
                             <label class="form-label fw-semibold">ملاحظات:</label>
@@ -70,6 +51,19 @@
         <!-- إحصائيات الحركات -->
         <div class="col-md-8">
             <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="avatar-md bg-light bg-opacity-50 rounded mx-auto mb-3">
+                                <iconify-icon icon="solar:wallet-money-broken"
+                                              class="fs-32 text-info avatar-title"></iconify-icon>
+                            </div>
+                            <h5 class="text-info">{{ number_format($investor->current_balance, 0) }} د.ع</h5>
+                            <p class="text-muted mb-0">الرصيد المتبقي القابل للسحب</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body text-center">
@@ -124,7 +118,7 @@
                             <i class="ri-add-line me-1"></i> إضافة إيداع
                         </button>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#withdrawModal">
-                            <i class="ri-subtract-line me-1"></i> سحب ربح
+                            <i class="ri-subtract-line me-1"></i> سحب
                         </button>
                         <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#profitModal">
                             <i class="ri-trophy-line me-1"></i> إضافة ربح
@@ -140,11 +134,21 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">حركات المستثمر</h4>
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="form-label mb-0 text-muted">عرض:</label>
+                        <select class="form-select form-select-sm per-page-select" onchange="changePerPage(this.value)">
+                            <option value="5" {{ request('per_page', 10) == 5 ? 'selected' : '' }}>5</option>
+                            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                            <option value="20" {{ request('per_page', 10) == 20 ? 'selected' : '' }}>20</option>
+                            <option value="50" {{ request('per_page', 10) == 50 ? 'selected' : '' }}>50</option>
+                        </select>
+                        <span class="text-muted small">لكل صفحة</span>
+                    </div>
                 </div>
                 <div class="card-body">
-                    @if($investor->transactions->count() > 0)
+                    @if($transactions->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
@@ -158,7 +162,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($investor->transactions as $transaction)
+                                    @foreach($transactions as $transaction)
                                         <tr>
                                             <td>{{ $transaction->transaction_date->format('Y-m-d') }}</td>
                                             <td>
@@ -202,6 +206,14 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div class="text-muted">
+                                عرض {{ $transactions->firstItem() ?? 0 }} إلى {{ $transactions->lastItem() ?? 0 }} من {{ $transactions->total() }} حركة
+                            </div>
+                            <div>
+                                {{ $transactions->links('pagination::bootstrap-4') }}
+                            </div>
                         </div>
                     @else
                         <div class="text-center py-4">
@@ -256,7 +268,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">سحب ربح من المستثمر</h5>
+                    <h5 class="modal-title">سحب من المستثمر</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="{{ route('investors.withdraw-profit') }}" method="POST">
@@ -265,7 +277,8 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">المبلغ</label>
-                            <input type="text" class="form-control" name="amount" required placeholder="أدخل المبلغ">
+                            <input type="text" class="form-control" name="amount" required
+                                   placeholder="الرصيد المتاح: {{ number_format($investor->current_balance, 0) }} د.ع">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">الوصف</label>
@@ -278,7 +291,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                        <button type="submit" class="btn btn-danger">سحب الربح</button>
+                        <button type="submit" class="btn btn-danger">سحب</button>
                     </div>
                 </form>
             </div>
@@ -320,5 +333,74 @@
     </div>
     @endif
 @endsection
+
+<style>
+/* تنسيق الـ pagination */
+.pagination {
+    margin: 0;
+    gap: 2px;
+}
+
+.pagination .page-link {
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    padding: 8px 12px;
+    margin: 0 1px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+    color: #495057;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #4F46E5;
+    border-color: #4F46E5;
+    color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+.pagination .page-item:first-child .page-link {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.pagination .page-item:last-child .page-link {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+/* تنسيق خيارات عدد العناصر المعروضة */
+.per-page-select {
+    width: 80px !important;
+    font-size: 13px;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+}
+
+.per-page-select:focus {
+    border-color: #4F46E5;
+    box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+}
+</style>
+
+<script>
+function changePerPage(perPage) {
+    const url = new URL(window.location);
+    url.searchParams.set('per_page', perPage);
+    url.searchParams.delete('page'); // إعادة تعيين الصفحة إلى الأولى
+    window.location.href = url.toString();
+}
+</script>
 
 <script src="{{ asset('js/investor-details.js') }}"></script>

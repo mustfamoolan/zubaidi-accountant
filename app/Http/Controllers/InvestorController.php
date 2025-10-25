@@ -50,11 +50,14 @@ class InvestorController extends Controller
         return redirect()->route('investors.index')->with('success', 'تم إضافة المستثمر بنجاح');
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $investor = Investor::with(['transactions' => function($query) {
-            $query->orderBy('transaction_date', 'desc');
-        }])->findOrFail($id);
+        $investor = Investor::findOrFail($id);
+
+        $perPage = $request->get('per_page', 10);
+        $transactions = $investor->transactions()
+            ->orderBy('transaction_date', 'desc')
+            ->paginate($perPage);
 
         $totalDeposits = $investor->transactions()->deposits()->sum('amount');
         $totalWithdrawals = $investor->total_withdrawals; // استخدام القيمة من قاعدة البيانات مباشرة
@@ -62,6 +65,7 @@ class InvestorController extends Controller
 
         return view('investors.show', compact(
             'investor',
+            'transactions',
             'totalDeposits',
             'totalWithdrawals',
             'totalProfits'
