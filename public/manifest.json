@@ -1,0 +1,31 @@
+{
+    "name": "Zubaidi Accountant - نظام المحاسبة",
+    "short_name": "Zubaidi Accountant",
+    "description": "نظام محاسبة متكامل لإدارة رأس المال والمستثمرين والفواتير",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#4F46E5",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/images/logo-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/images/logo-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/images/screenshot-mobile.png",
+            "sizes": "390x844",
+            "type": "image/png"
+        }
+    ]
+}

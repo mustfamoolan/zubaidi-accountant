@@ -52,6 +52,9 @@
 <!-- Number Formatter Script -->
 <script src="{{ asset('js/number-formatter.js') }}"></script>
 
+<!-- PWA Registration Script -->
+<script src="{{ asset('js/pwa-register.js') }}"></script>
+
 </body>
 
 </html>

@@ -191,7 +191,7 @@
                                                     @if($transaction->amount == 0)
                                                         <span class="text-warning fw-bold">دين</span>
                                                     @else
-                                                        <span class="text-warning fw-bold">-{{ number_format($transaction->amount, 0) }} د.ع</span>
+                                                        <span class="text-warning fw-bold">-{{ number_format($transaction->amount, 0) }} د.ع (حصة من مصروف مشترك)</span>
                                                     @endif
                                                 @endif
                                             </td>

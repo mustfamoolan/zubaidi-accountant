@@ -20,6 +20,11 @@
                </div>
 
                <div class="d-flex align-items-center gap-1">
+                    <!-- زر تثبيت التطبيق -->
+                    <button id="install-button" class="btn btn-primary btn-sm me-2" style="display: none;">
+                        <i class="ri-download-line me-1"></i> تثبيت التطبيق
+                    </button>
+
                     <!-- Theme Color (Light/Dark) -->
                     <div class="topbar-item">
                          <button type="button" class="topbar-button" id="light-dark-mode">

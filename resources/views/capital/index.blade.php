@@ -151,7 +151,7 @@
                                                 @if($transaction->type === 'deposit')
                                                     <span class="text-success fw-bold">+{{ number_format($transaction->amount, 0) }} د.ع</span>
                                                 @elseif($transaction->type === 'shared_expense')
-                                                    <span class="text-warning fw-bold">توزيع على المستثمرين</span>
+                                                    <span class="text-warning fw-bold">{{ number_format($transaction->amount, 0) }} د.ع</span>
                                                 @endif
                                             </td>
                                             <td>{{ $transaction->description ?? '-' }}</td>
