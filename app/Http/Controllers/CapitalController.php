@@ -24,6 +24,7 @@ class CapitalController extends Controller
 
         // إحصائيات رأس المال
         $totalDeposits = CapitalTransaction::deposits()->sum('amount');
+        $totalWithdrawals = CapitalTransaction::withdrawals()->sum('amount');
         $totalSharedExpenses = CapitalTransaction::sharedExpenses()->sum('amount');
         $recentTransactions = CapitalTransaction::with('createdBy')->recent(10)->get();
 
@@ -36,6 +37,7 @@ class CapitalController extends Controller
         return view('capital.index', compact(
             'capitalAccount',
             'totalDeposits',
+            'totalWithdrawals',
             'totalSharedExpenses',
             'recentTransactions',
             'totalInvestors',
@@ -101,6 +103,37 @@ class CapitalController extends Controller
             }
 
             return redirect()->back()->with('success', $message);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطأ: ' . $e->getMessage());
+        }
+    }
+
+    public function withdraw(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:0.01',
+            'description' => 'required|string|max:500',
+            'transaction_date' => 'nullable|date|before_or_equal:today',
+        ]);
+
+        try {
+            $capitalAccount = CapitalAccount::first();
+            if (!$capitalAccount) {
+                return redirect()->back()->with('error', 'لا يوجد حساب رأس مال');
+            }
+
+            // التحقق من وجود رصيد كافي
+            if ($capitalAccount->current_balance < $request->amount) {
+                return redirect()->back()->with('error', 'الرصيد غير كافي للسحب. الرصيد الحالي: ' . number_format((float)$capitalAccount->current_balance, 0) . ' د.ع');
+            }
+
+            $capitalAccount->withdraw(
+                $request->amount,
+                $request->description,
+                $request->transaction_date
+            );
+
+            return redirect()->back()->with('success', 'تم السحب من رأس المال بنجاح');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ: ' . $e->getMessage());
         }

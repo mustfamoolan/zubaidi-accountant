@@ -43,6 +43,23 @@
                     <div class="row align-items-center justify-content-between">
                         <div class="col-6">
                             <div class="avatar-md bg-light bg-opacity-50 rounded">
+                                <iconify-icon icon="solar:arrow-up-broken"
+                                              class="fs-32 text-danger avatar-title"></iconify-icon>
+                            </div>
+                            <p class="text-muted mb-2 mt-3">إجمالي السحوبات</p>
+                            <h3 class="text-dark fw-bold mb-0">{{ number_format($totalWithdrawals, 0) }} د.ع</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center justify-content-between">
+                        <div class="col-6">
+                            <div class="avatar-md bg-light bg-opacity-50 rounded">
                                 <iconify-icon icon="solar:chart-broken"
                                               class="fs-32 text-success avatar-title"></iconify-icon>
                             </div>
@@ -97,7 +114,10 @@
                     <h5 class="card-title">عمليات رأس المال</h5>
                     <div class="d-flex gap-2 flex-wrap">
                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#depositModal">
-                            <i class="ri-add-line me-1"></i> إضافة إيداع
+                            <i class="ri-add-line me-1"></i> إضافة إيداع رأس المال
+                        </button>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                            <i class="ri-subtract-line me-1"></i> سحب من رأس المال
                         </button>
                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#sharedExpenseModal">
                             <i class="ri-bill-line me-1"></i> مصروف مشترك
@@ -143,6 +163,8 @@
                                             <td>
                                                 @if($transaction->type === 'deposit')
                                                     <span class="badge bg-success">إيداع</span>
+                                                @elseif($transaction->type === 'withdrawal')
+                                                    <span class="badge bg-danger">سحب</span>
                                                 @elseif($transaction->type === 'shared_expense')
                                                     <span class="badge bg-warning">مصروف مشترك</span>
                                                 @endif
@@ -150,6 +172,8 @@
                                             <td>
                                                 @if($transaction->type === 'deposit')
                                                     <span class="text-success fw-bold">+{{ number_format($transaction->amount, 0) }} د.ع</span>
+                                                @elseif($transaction->type === 'withdrawal')
+                                                    <span class="text-danger fw-bold">-{{ number_format($transaction->amount, 0) }} د.ع</span>
                                                 @elseif($transaction->type === 'shared_expense')
                                                     <span class="text-warning fw-bold">{{ number_format($transaction->amount, 0) }} د.ع</span>
                                                 @endif
@@ -248,6 +272,39 @@
             </div>
         </div>
     </div>
+    <!-- Modal السحب من رأس المال -->
+    <div class="modal fade" id="withdrawModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">سحب من رأس المال</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('capital.withdraw') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">المبلغ <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="amount" required placeholder="أدخل المبلغ">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">سبب السحب <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="description" rows="3" required placeholder="أدخل سبب السحب"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">تاريخ السحب</label>
+                            <input type="date" class="form-control" name="transaction_date" value="{{ now()->toDateString() }}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-danger">سحب من رأس المال</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 <script src="{{ asset('js/capital.js') }}"></script>

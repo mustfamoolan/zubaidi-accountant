@@ -46,6 +46,8 @@
                                             <td>
                                                 @if($transaction->type === 'deposit')
                                                     <span class="badge bg-success">إيداع</span>
+                                                @elseif($transaction->type === 'withdrawal')
+                                                    <span class="badge bg-danger">سحب</span>
                                                 @elseif($transaction->type === 'shared_expense')
                                                     <span class="badge bg-warning">مصروف مشترك</span>
                                                 @endif
@@ -53,6 +55,8 @@
                                             <td>
                                                 @if($transaction->type === 'deposit')
                                                     <span class="text-success fw-bold">+{{ number_format($transaction->amount, 0) }} د.ع</span>
+                                                @elseif($transaction->type === 'withdrawal')
+                                                    <span class="text-danger fw-bold">-{{ number_format($transaction->amount, 0) }} د.ع</span>
                                                 @elseif($transaction->type === 'shared_expense')
                                                     <span class="text-warning fw-bold">{{ number_format($transaction->amount, 0) }} د.ع</span>
                                                 @endif
