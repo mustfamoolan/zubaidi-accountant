@@ -131,7 +131,8 @@ class InvoiceController extends Controller
             }
 
             // تحديث حالة الفاتورة بناءً على المبلغ المباع
-            $totalSoldUsd = $invoice->sales()->sum('total_amount_usd') + $totalAmountUsd;
+            // حساب المجموع بعد حفظ البيع الحالي
+            $totalSoldUsd = $invoice->sales()->sum('total_amount_usd');
             if ($totalSoldUsd >= $invoice->amount_usd) {
                 $invoice->status = 'sold';
             } else {
