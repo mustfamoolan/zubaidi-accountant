@@ -204,6 +204,28 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.show', $invoice->id)->with('success', 'تم تحديث الفاتورة بنجاح');
     }
 
+    public function destroy($id)
+    {
+        $invoice = Invoice::findOrFail($id);
+
+        // التحقق من وجود مبيعات للفاتورة
+        if ($invoice->sales()->count() > 0) {
+            return redirect()->route('invoices.index')->with('error', 'لا يمكن حذف فاتورة لها مبيعات. يرجى حذف المبيعات أولاً.');
+        }
+
+        DB::beginTransaction();
+        try {
+            $invoiceNumber = $invoice->invoice_number;
+            $invoice->delete();
+
+            DB::commit();
+            return redirect()->route('invoices.index')->with('success', 'تم حذف الفاتورة "' . $invoiceNumber . '" بنجاح');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'حدث خطأ أثناء حذف الفاتورة: ' . $e->getMessage());
+        }
+    }
+
     public function destroySale($saleId)
     {
         $sale = InvoiceSale::findOrFail($saleId);

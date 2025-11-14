@@ -5,6 +5,7 @@
 <meta name="description" content="نظام محاسبة شامل لإدارة الفواتير ورأس المال والمستثمرين" />
 <meta name="author" content="Zubaidi Accountant" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <!-- App favicon -->
 <link rel="shortcut icon" href="/images/favicon.ico">
