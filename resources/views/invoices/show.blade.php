@@ -48,7 +48,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">نسبة الضريبة:</label>
-                                <p class="mb-0">{{ number_format($invoice->tax_percentage, 0) }}%</p>
+                                <p class="mb-0">{{ number_format($invoice->tax_percentage, 1) }}%</p>
                             </div>
                         </div>
                     </div>
